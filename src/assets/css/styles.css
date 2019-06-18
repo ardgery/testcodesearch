@@ -22,6 +22,7 @@ time, mark, audio, video {
 /*=================== VARIABLES ===================*/
 /*==== COLORS ====*/
 /*==== FONT-SIZES ====*/
+/*==== MEDIA QUERIES BREAK ====*/
 /*=================== KEYFRAMES ===================*/
 @-webkit-keyframes fade {
   0% {
@@ -76,11 +77,15 @@ body {
     float: left;
     width: 50%;
     margin-bottom: 30px; }
+    @media screen and (min-width: 600px) {
+      .body .col {
+        width: 25%; } }
   .body .sort {
     color: #949494;
     font-size: 12px;
     text-align: right;
-    margin-right: 13px; }
+    margin-right: 13px;
+    cursor: pointer; }
   .body .dropDown {
     color: #191919;
     font-size: 12px; }
@@ -100,7 +105,8 @@ body {
     .body .dropdownList p {
       padding: 7px 0;
       color: #191919;
-      font-size: 14px; }
+      font-size: 14px;
+      cursor: pointer; }
     .body .dropdownList p.active {
       font-weight: bold; }
   .body .arrowDown {

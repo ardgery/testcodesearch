@@ -1,40 +1,24 @@
 import React, { Component } from 'react';
 import Logo from '../../assets/images/mds-logo.svg';
-import ImgNotFound from '../../assets/images/search-not-found.svg';
 import Spinner from '../../assets/images/rolling_100.gif';
 import ArrowDown from '../../assets/images/chevron-down.svg';
+import NotFound from './notFound';
 import axios from 'axios';
-
-let heightTemp = [];
 
 export class body extends Component {
     constructor(props){
         super(props);
         this.state = {
             query:"",
-            bodyHeightSave:'auto',
-            scrolledState:0,
-            sortedData:'populer',
-            absHeight:'auto',
             isLoaded:true,
             windowWidth:'',
-            windowHeight:'',
-            tempHeight:[],
             dropdownData:{
                 dropdownList:['Populer','Terbaru','Harga Terendah','Harga Tertinggi','Diskon Terendah','Diskon Tertinggi'],
                 showDropdown:false,
                 activeIndex:0
-            }
+            },
+            errorSearch:false
         }
-    }
-
-    isBottom(el) {
-        return el.getBoundingClientRect().bottom <= window.innerHeight;
-    }
-
-    componentWillMount(){
-        console.log("MASUK WILL MOUNT");
-        
     }
 
     setWindowDimension = () => {
@@ -46,48 +30,24 @@ export class body extends Component {
         })
     }
 
+    isBottom(el) {
+        return el.getBoundingClientRect().bottom <= window.innerHeight;
+    }
+
     componentDidMount(){
         document.addEventListener('scroll', this.trackScrolling);
         window.addEventListener("resize", this.setWindowDimension); 
-        console.log("MASUK DID MOUNT");
-
-        console.log("THIS COLUMN =",this.column);
     }
 
     componentWillUnmount() {
         document.removeEventListener('scroll', this.trackScrolling);
         window.removeEventListener("resize", this.setWindowDimension);
-        console.log("MASUK WILL UNMOUNT")
-    }
-
-    heightSync(par){
-        if(par!==undefined && !isNaN(par)){
-            heightTemp.push(par);
-
-        }
-        console.log("HEIGHT TEMPPP =",heightTemp);
-
-        Array.prototype.max = function() {
-            return Math.max.apply(null, this);
-        };
-        console.log("BEST HEIGHT = ",heightTemp.max());
-
-        this.setState({
-            heightSync:heightTemp.max(),
-            windowWidth: window.innerWidth, 
-            windowHeight: window.innerHeight
-        })
     }
 
     trackScrolling = () => {
-        const {scrolledState} = this.state;
         const wrappedElement = document.getElementById('bodyBase');
         if (this.isBottom(wrappedElement)) {
-            this.setState({scrolledState:scrolledState+1},()=>{
-                if(this.state.scrolledState > scrolledState){
-                    console.log("bottom reached!")
-                }
-            });
+            console.log("bottom reached!");
             document.removeEventListener('scroll', this.trackScrolling);
         }
     };
@@ -95,24 +55,23 @@ export class body extends Component {
     getSortData(par){
         let sortResult;
         if(par===0){
-            sortResult = 'energy+DESC'
+            sortResult = 'energy+DESC';
         }else if(par===1){
-            sortResult = 'date+DESC'
+            sortResult = 'date+DESC';
         }else if(par===2){
-            sortResult = 'pricing+ASC'
+            sortResult = 'pricing+ASC';
         }else if(par===3){
-            sortResult = 'pricing+DESC'
+            sortResult = 'pricing+DESC';
         }else if(par===4){
-            sortResult = 'discount+ASC'
+            sortResult = 'discount+ASC';
         }else if(par===5){
-            sortResult = 'discount+DESC'
+            sortResult = 'discount+DESC';
         }
         return sortResult;
     }
 
     getData(par,sort){
         this.setState({isLoaded:false});
-        const {bodyHeight} = this.state;
         console.log("SORT = ",sort);
         console.log("HOHO = ",document.documentElement.scrollHeight);
         let sorting = sort!==undefined? "&sort="+this.getSortData(sort):"&sort=energy+DESC";
@@ -121,24 +80,22 @@ export class body extends Component {
         .then(res => {
             console.log('Res =',res.data.data);
             let datas = res.data.data;
-            this.setState({data:datas,isLoaded:true,bodyHeight:datas.info.product_count!==undefined?this.state.bodyHeight: this.state.bodyHeight });
+            this.setState({data:datas,isLoaded:true,errorSearch:false,bodyHeight:datas.info.product_count!==undefined?this.state.bodyHeight: this.state.bodyHeight });
         })
+        .catch(err=>{
+            console.log("ERORO = ",err);
+            this.setState({isLoaded:true,errorSearch:true},()=>{console.log("ERRORSEARCH = ",this.state.errorSearch)})
+        });
     }
+    
     componentWillReceiveProps({query,bodyHeight}) {
-        this.setState({query:query,bodyHeight:bodyHeight+'px',bodyHeightSave:bodyHeight+'px'},()=>{
+        this.setState({query:query,bodyHeight:bodyHeight+'px'},()=>{
             if(query!==''){
                 this.getData(query);
             }
         })
         console.log("QUERYY = ",query);
         
-    }
-
-    sortData = (e) =>{
-        console.log("e.target.value",e.target.value);
-        this.setState({sortedData:e.target.value},()=>{
-            this.getData(this.state.query,this.state.sortedData);
-        })
     }
 
     showListDropdown(par){
@@ -163,7 +120,7 @@ export class body extends Component {
 
     render() {
         console.log("RENDERINGG...");
-        const {query,data,heightSync,bodyHeight,isLoaded,windowWidth,windowHeight,dropdownData} = this.state;
+        const {query,data,bodyHeight,isLoaded,windowWidth,dropdownData,errorSearch} = this.state;
         if(isLoaded){
             console.log("masuk isLoaded");
             if(query===""){
@@ -210,7 +167,7 @@ export class body extends Component {
                                         <div 
                                             className="col" 
                                             key={index} ind={index} 
-                                            style={{height:heightSync}} >
+                                             >
                                                 <div className="colInside">
                                                     <img 
                                                         alt={item.product_title}
@@ -237,19 +194,15 @@ export class body extends Component {
                     }else{
                         console.log("data yg dicari tidak ada");
                         return(
-                            <section className="body notFound" style={{textAlign:"center",height:bodyHeight,padding:0}} id="bodyBase"> 
-                                <div className="notFound">
-                                    <div className="notFoundWrap">
-                                        <img src={ImgNotFound} alt="" />
-                                        <h1 className="sorry">Sorry :(</h1>
-                                        <p>No results found for "{query}".<br/>
-                                        Please try another keyword.</p>
-                                    </div>
-                                </div>
-                            </section>
+                            <NotFound query={query} bodyHeight={bodyHeight}/>
                         )
                     }
                 }else{
+                    if(errorSearch){
+                        return(
+                            <NotFound query={query} bodyHeight={bodyHeight}/>
+                        )
+                    }
                     return null;
                 }
             }

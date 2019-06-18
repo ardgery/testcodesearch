@@ -51,13 +51,18 @@ body{
     .col{
         float:left;
         width:50%;
-        margin-bottom:30px
+        margin-bottom:30px;
+
+        @media screen and (min-width: $breakTablet) {
+            width:25%;
+        }
     }
     .sort{
         color:$mainGrey;
         font-size:$miniFont;
         text-align:right;
         margin-right: 13px;	
+        cursor:pointer;
     }
     .dropDown{
         color:$mainBlack;	
@@ -80,6 +85,7 @@ body{
             padding:7px 0;
             color:$mainBlack;
             font-size:$normalFont;
+            cursor:pointer;
         }
         p.active{
             font-weight: bold;
@@ -145,18 +151,24 @@ body{
         margin:auto;
         height: 55%;
     }
-    .notFoundWrap h1.sorry{
-        font-size:$headingSmall;
-        margin:25px 0 25px 0;
-        font-weight:bold;
+    .notFoundWrap{
+        h1.sorry{
+            font-size:$headingSmall;
+            margin:25px 0 25px 0;
+            font-weight:bold;  
+        }
     }
-    .notFoundWrap img{
-        width:130px;
+    .notFoundWrap{
+        img{
+            width:130px;
+        }
     }
-    .notFoundWrap p{
-        font-size: $semiFont;
-        line-height: 18px;
-        color:#949494;
+    .notFoundWrap{
+        p{
+            font-size: $semiFont;
+            line-height: 18px;
+            color:#949494;
+        }
     }
     .loadingGif{
         vertical-align: middle;
