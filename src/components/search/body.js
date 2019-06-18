@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Logo from '../../assets/images/mds-logo.svg';
 import ImgNotFound from '../../assets/images/search-not-found.svg';
 import Spinner from '../../assets/images/rolling_100.gif';
+import ArrowDown from '../../assets/images/chevron-down.svg';
 import axios from 'axios';
 
 let heightTemp = [];
@@ -18,7 +19,12 @@ export class body extends Component {
             isLoaded:true,
             windowWidth:'',
             windowHeight:'',
-            tempHeight:[]
+            tempHeight:[],
+            dropdownData:{
+                dropdownList:['Populer','Terbaru','Harga Terendah','Harga Tertinggi','Diskon Terendah','Diskon Tertinggi'],
+                showDropdown:false,
+                activeIndex:0
+            }
         }
     }
 
@@ -88,17 +94,17 @@ export class body extends Component {
 
     getSortData(par){
         let sortResult;
-        if(par==='populer'){
+        if(par===0){
             sortResult = 'energy+DESC'
-        }else if(par==='terbaru'){
+        }else if(par===1){
             sortResult = 'date+DESC'
-        }else if(par==='harga_terendah'){
+        }else if(par===2){
             sortResult = 'pricing+ASC'
-        }else if(par==='harga_tertinggi'){
+        }else if(par===3){
             sortResult = 'pricing+DESC'
-        }else if(par==='diskon_terendah'){
+        }else if(par===4){
             sortResult = 'discount+ASC'
-        }else if(par==='diskon_tertinggi'){
+        }else if(par===5){
             sortResult = 'discount+DESC'
         }
         return sortResult;
@@ -135,9 +141,29 @@ export class body extends Component {
         })
     }
 
+    showListDropdown(par){
+        const {dropdownData} = this.state;
+
+        console.log("PAREPAREE = ",par)
+        console.log("DROPDOWNDATA = ",dropdownData);
+
+        this.setState({
+            dropdownData:{
+                ...dropdownData,
+                showDropdown:dropdownData.showDropdown?false:true,
+                activeIndex:par!==undefined?par:dropdownData.activeIndex
+            }
+        },()=>{
+            if(par!==undefined){
+                this.getData(this.state.query,par);
+            }   
+        });
+
+    }
+
     render() {
         console.log("RENDERINGG...");
-        const {query,data,heightSync,bodyHeight,isLoaded,windowWidth,windowHeight} = this.state;
+        const {query,data,heightSync,bodyHeight,isLoaded,windowWidth,windowHeight,dropdownData} = this.state;
         if(isLoaded){
             console.log("masuk isLoaded");
             if(query===""){
@@ -157,7 +183,7 @@ export class body extends Component {
                         return(
                             <section className="body" id="bodyBase">
                                 <h1>"{query}" <span>{data.info.product_count} products found</span></h1>
-                                <p className="sort">Sort by: <select onChange={this.sortData} value={this.state.sortedData}>
+                                {/* <p className="sort">Sort by: <select onChange={this.sortData} value={this.state.sortedData}>
                                             <option value='populer'>Populer</option>
                                             <option value='terbaru'>Terbaru</option>
                                             <option value='harga_terendah'>Harga Terendah</option>
@@ -165,7 +191,28 @@ export class body extends Component {
                                             <option value='diskon_terendah'>Diskon Terendah</option>
                                             <option value='diskon_tertinggi'>Diskon Tertinggi</option>
                                            </select>
-                                </p>
+                                </p> */}
+                                <div className="dropdownArea">
+                                    <div className="dropdownListWrap">
+                                        <p className="sort">
+                                            Sort by: <span className="dropDown" onClick={()=>this.showListDropdown()}>{dropdownData.dropdownList[dropdownData.activeIndex]}&nbsp;&nbsp;<img src={ArrowDown} alt="" className="arrowDown"/></span>
+                                        </p>
+                                        {
+                                            dropdownData.showDropdown?
+                                                <div className="dropdownList">
+                                                {
+                                                    dropdownData.dropdownList.map((item,index)=> 
+                                                        <p 
+                                                            key={index} 
+                                                            className={index===dropdownData.activeIndex?'active':''}
+                                                            onClick={()=>this.showListDropdown(index)}>{item}</p>
+                                                    )
+                                                }
+                                                </div>
+                                            : null
+                                        }
+                                    </div>
+                                </div>
                                 <div className="colWrapper">
                                 {
                                     data.products.map((item,index)=>
@@ -201,7 +248,7 @@ export class body extends Component {
                         return(
                             <section className="body notFound" style={{textAlign:"center",height:bodyHeight,padding:0}} id="bodyBase"> 
                                 <div className="notFoundWrap">
-                                    <img src={ImgNotFound} alt="Matahari Image Not Found" />
+                                    <img src={ImgNotFound} alt="" />
                                     <h1 className="sorry">Sorry :(</h1>
                                     <p>No results found for "{query}".<br/>
                                     Please try another keyword.</p>
