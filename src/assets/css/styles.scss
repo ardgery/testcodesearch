@@ -1,0 +1,123 @@
+@import "reset";
+@import "variables";
+@import "mixins";
+
+/*=================== KEYFRAMES ===================*/
+@include fadeKeyframes;
+/*=================== BODY ===================*/
+body{
+	font-family: Tahoma, Geneva, sans-serif;
+	color:$mainBlack;
+}
+
+/*=================== HEADER CLASS ===================*/
+.header{
+    background:$mainRed;
+    padding:10px 15px;
+
+    input{
+        width:100%;
+        border:none;
+        border-radius:5px;
+        padding:10px 30px;
+        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+        -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+        box-sizing: border-box;    
+        background-image: url("../images/search.svg");
+        background-repeat: no-repeat;
+        background-position: 10px center;
+    }
+}
+
+/*=================== BODY CLASS ===================*/
+.body{
+	position:relative;
+    padding:5px;
+    
+    h1{
+        font-size:$headingFont;
+        font-weight:bold;
+        margin-bottom:40px
+    }
+    span{
+        font-size:$normalFont;
+        font-weight:normal;
+        color:$mainGrey;
+    }
+    .logo{
+        width:60%;
+        vertical-align: middle;
+    }
+    .col{
+        float:left;
+        width:50%;
+        margin-bottom:30px
+    }
+    .sort{
+        color:$mainGrey;
+        font-size:$miniFont;
+        text-align:right;
+        margin-right: 13px;	
+    }
+    .dropDown{
+        color:$mainBlack;	
+        font-size:$miniFont;
+    }
+    .dropdownListWrap{
+        position:relative;
+        margin-bottom:20px;
+    }
+    .dropdownList{
+        position:absolute;
+        right:15px;
+        top:22px;
+        background:#fff;
+        padding:8px 15px;
+        @include boxShadow;
+        z-index:99;
+
+        p{
+            padding:7px 0;
+            color:$mainGrey;
+            font-size:$normalFont;
+        }
+        p.active{
+            font-weight: bold;
+        }
+    }
+    select{
+        border:none;
+        background:url('../images/chevron-down.svg') right 5px no-repeat;
+        background-size: 11px 6px;
+        -moz-appearance:none; /* Firefox */
+        -webkit-appearance:none; /* Safari and Chrome */
+        appearance:none;
+        padding-right:17px;	
+    }
+    .arrowDown{
+        width: 10px;
+    }
+    .colInside{
+        margin:0 4%;
+    }
+    .productImage{
+        font-size:$advanceFont;
+        font-weight:normal;
+        width:100%;
+        opacity:1;
+
+        &:hover{
+            -webkit-animation-name: fade; /* Safari 4.0 - 8.0 */
+            -webkit-animation-duration: 0.5s; /* Safari 4.0 - 8.0 */
+            animation-name: fade;
+            animation-duration: 0.5s;
+        }
+    }
+    .productTitle{
+        font-size: $miniFont;
+        font-weight:bold;
+        margin: 5px 0 10px 0;
+        height: 11px;
+        overflow: hidden;
+    }
+}
