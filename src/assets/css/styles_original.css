@@ -193,20 +193,20 @@ body{
 	clear: both;
 	display: table;
 }
-.body.notFound{
+.body .notFound{
 	position:relative;
 	text-align: center;
-}
-.body .notFoundWrap h1.sorry{
-	font-size:20px;
-	margin:25px 0 25px 0;
-	font-weight:bold;
 }
 .body .notFoundWrap{
 	position:absolute;
 	top:0;left:0;bottom:0;right:0;
 	margin:auto;
 	height: 55%;
+}
+.body .notFoundWrap h1.sorry{
+	font-size:20px;
+	margin:25px 0 25px 0;
+	font-weight:bold;
 }
 .body .notFoundWrap img{
 	width:130px;

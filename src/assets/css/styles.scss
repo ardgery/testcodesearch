@@ -78,21 +78,12 @@ body{
 
         p{
             padding:7px 0;
-            color:$mainGrey;
+            color:$mainBlack;
             font-size:$normalFont;
         }
         p.active{
             font-weight: bold;
         }
-    }
-    select{
-        border:none;
-        background:url('../images/chevron-down.svg') right 5px no-repeat;
-        background-size: 11px 6px;
-        -moz-appearance:none; /* Firefox */
-        -webkit-appearance:none; /* Safari and Chrome */
-        appearance:none;
-        padding-right:17px;	
     }
     .arrowDown{
         width: 10px;
@@ -117,7 +108,58 @@ body{
         font-size: $miniFont;
         font-weight:bold;
         margin: 5px 0 10px 0;
-        height: 11px;
+        height: 12px;
         overflow: hidden;
+    }
+    .productDesc{
+        font-size:$miniFont;
+        color:$mainGrey;
+        line-height: 16px;
+        height: 35px;
+        overflow: hidden;
+    }
+    .realPrize{
+        font-size:$normalFont;
+        font-weight:bold;
+        margin: 8px 0 5px 0;
+        height: 14px;
+        overflow: hidden;
+    }
+    .prize{
+        font-size:$miniFont;
+        color:$mainGrey;
+        text-decoration:line-through;
+        height: 14px;
+        overflow: hidden;
+    }
+    .colWrapper{
+        @include clearFloat;
+    }
+    .notFound{
+        position:relative;
+        text-align: center;
+    }
+    .notFoundWrap{
+        position:absolute;
+        top:0;left:0;bottom:0;right:0;
+        margin:auto;
+        height: 55%;
+    }
+    .notFoundWrap h1.sorry{
+        font-size:$headingSmall;
+        margin:25px 0 25px 0;
+        font-weight:bold;
+    }
+    .notFoundWrap img{
+        width:130px;
+    }
+    .notFoundWrap p{
+        font-size: $semiFont;
+        line-height: 18px;
+        color:#949494;
+    }
+    .loadingGif{
+        vertical-align: middle;
+        width:50px;
     }
 }

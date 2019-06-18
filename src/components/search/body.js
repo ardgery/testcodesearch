@@ -183,15 +183,6 @@ export class body extends Component {
                         return(
                             <section className="body" id="bodyBase">
                                 <h1>"{query}" <span>{data.info.product_count} products found</span></h1>
-                                {/* <p className="sort">Sort by: <select onChange={this.sortData} value={this.state.sortedData}>
-                                            <option value='populer'>Populer</option>
-                                            <option value='terbaru'>Terbaru</option>
-                                            <option value='harga_terendah'>Harga Terendah</option>
-                                            <option value='harga_tertinggi'>Harga Tertinggi</option>
-                                            <option value='diskon_terendah'>Diskon Terendah</option>
-                                            <option value='diskon_tertinggi'>Diskon Tertinggi</option>
-                                           </select>
-                                </p> */}
                                 <div className="dropdownArea">
                                     <div className="dropdownListWrap">
                                         <p className="sort">
@@ -247,11 +238,13 @@ export class body extends Component {
                         console.log("data yg dicari tidak ada");
                         return(
                             <section className="body notFound" style={{textAlign:"center",height:bodyHeight,padding:0}} id="bodyBase"> 
-                                <div className="notFoundWrap">
-                                    <img src={ImgNotFound} alt="" />
-                                    <h1 className="sorry">Sorry :(</h1>
-                                    <p>No results found for "{query}".<br/>
-                                    Please try another keyword.</p>
+                                <div className="notFound">
+                                    <div className="notFoundWrap">
+                                        <img src={ImgNotFound} alt="" />
+                                        <h1 className="sorry">Sorry :(</h1>
+                                        <p>No results found for "{query}".<br/>
+                                        Please try another keyword.</p>
+                                    </div>
                                 </div>
                             </section>
                         )
