@@ -5,6 +5,7 @@ import ArrowDown from '../../assets/images/chevron-down.svg';
 import NotFound from './notFound';
 import axios from 'axios';
 
+
 let result=[],count=36;
 
 export class body extends Component {
@@ -29,42 +30,41 @@ export class body extends Component {
             }
         }
 
-        // Binds our scroll event handler
-        window.onscroll = () => {
-            const {dataCount,loopStatus} = this.state;
-            // Checks that the page has scrolled to the bottom
-            if (
-            window.innerHeight + document.documentElement.scrollTop
-            === document.documentElement.offsetHeight
-            ) {
-                console.log("MBAA");
-                // this.setState({isLoaded:false});
+    
+        // window.onscroll = () => {
+            
+        //     // Checks that the page has scrolled to the bottom
+        //     if (
+        //     window.innerHeight + document.documentElement.scrollTop
+        //     === document.documentElement.offsetHeight
+        //     ) {
+        //         console.log("MBAA");
+        //         const {dataCount,loopStatus} = this.state;
+
+        //         if(count<this.state.dataCount){
+        //             if(dataCount!==undefined){
+        //                 let countDivide = Math.floor(dataCount/36);
+
+        //                 console.log("DIVIDED = ",Math.floor(dataCount/36));
+        //                 console.log("LOOP LEFT = ",dataCount-(36*countDivide));
+
+        //                 this.setState({
+        //                     loopStatus:{
+        //                         currentLoop:loopStatus.currentLoop+1,
+        //                         totalLoop:countDivide,
+        //                         loopLeft:dataCount-(36*countDivide)
+        //                     }
+        //                 },()=>{
+        //                     console.log("LOOP STATUS = ",this.state.loopStatus)
+        //                     if(this.state.loopStatus.currentLoop<=this.state.loopStatus.totalLoop){
+        //                         this.getData(this.state.query);
+        //                     }
+        //                 })
+        //             }
+        //         }
                 
-
-                if(count<this.state.dataCount){
-                    if(dataCount!==undefined){
-                        let countDivide = Math.floor(dataCount/36);
-
-                        console.log("DIVIDED = ",Math.floor(dataCount/36));
-                        console.log("LOOP LEFT = ",dataCount-(36*countDivide));
-
-                        this.setState({
-                            loopStatus:{
-                                currentLoop:loopStatus.currentLoop+1,
-                                totalLoop:countDivide,
-                                loopLeft:dataCount-(36*countDivide)
-                            }
-                        },()=>{
-                            console.log("LOOP STATUS = ",this.state.loopStatus)
-                            if(this.state.loopStatus.currentLoop<=this.state.loopStatus.totalLoop){
-                                this.getData(this.state.query);
-                            }
-                        })
-                    }
-                }
-                
-            }
-        };
+        //     }
+        // };
     }
 
     setWindowDimension = () => {
@@ -77,7 +77,7 @@ export class body extends Component {
     }
 
     isBottom(el) {
-        // return el.getBoundingClientRect().bottom <= window.innerHeight;
+        return el.getBoundingClientRect().bottom <= window.innerHeight;
     }
 
     umaka(){
@@ -86,21 +86,44 @@ export class body extends Component {
     }
 
     componentDidMount(){
-        // document.addEventListener('scroll', this.trackScrolling);
+        document.addEventListener('scroll', this.trackScrolling);
         window.addEventListener("resize", this.setWindowDimension); 
     }
 
     componentWillUnmount() {
-        // document.removeEventListener('scroll', this.trackScrolling);
+        document.removeEventListener('scroll', this.trackScrolling);
         window.removeEventListener("resize", this.setWindowDimension);
     }
 
     trackScrolling = () => {
-        // const wrappedElement = document.getElementById('bodyBase');
-        // if (this.isBottom(wrappedElement)) {
-        //     console.log("bottom reached!");
-        //     document.removeEventListener('scroll', this.trackScrolling);
-        // }
+        const wrappedElement = document.getElementById('bodyBase');
+        if (this.isBottom(wrappedElement)) {
+            console.log("bottom reached!");
+            const {dataCount,loopStatus} = this.state;
+
+            if(count<this.state.dataCount){
+                if(dataCount!==undefined){
+                    let countDivide = Math.floor(dataCount/36);
+
+                    console.log("DIVIDED = ",Math.floor(dataCount/36));
+                    console.log("LOOP LEFT = ",dataCount-(36*countDivide));
+
+                    this.setState({
+                        loopStatus:{
+                            currentLoop:loopStatus.currentLoop+1,
+                            totalLoop:countDivide,
+                            loopLeft:dataCount-(36*countDivide)
+                        }
+                    },()=>{
+                        console.log("LOOP STATUS = ",this.state.loopStatus)
+                        if(this.state.loopStatus.currentLoop<=this.state.loopStatus.totalLoop){
+                            this.getData(this.state.query);
+                        }
+                    })
+                }
+            }
+            // document.removeEventListener('scroll', this.trackScrolling);
+        }
     };
 
     getSortData(par){
