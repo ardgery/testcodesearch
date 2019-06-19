@@ -11,7 +11,7 @@
 
 ============================
 
-** Untuk membuat Production Folder :
+** Untuk membuat Production Folder dan Menjalankannnya di static server :
 
 - Masuk ke directory root folder project dengan command line, dan ketik 
    "npm run build" untuk membuat production folder.
@@ -22,7 +22,7 @@
 ** Framework dll :
 
 - React Framework : "create-react-app"
-- Styling : SASS/SCSS
+- Styling : SASS / SCSS
 
 ============================
 
