@@ -10,7 +10,7 @@ Test code Single Page Application untuk halaman Search
    akan terbuka di browser.
 ```
 
-### Untuk membuat Production Folder :
+### Untuk membuat Production Folder dan Menjalankannnya di static server :
 ```sh
 - Masuk ke directory root folder project dengan command line, dan ketik 
    "npm run build" untuk membuat production folder.
@@ -20,7 +20,7 @@ Test code Single Page Application untuk halaman Search
 ### Framework dll :
 ```sh
 - React Framework : "create-react-app"
-- Styling : SASS/SCSS
+- Styling : SASS / SCSS
 ```
 
 ### Fitur Ekstra :
