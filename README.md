@@ -1,4 +1,4 @@
-# Matahari Test Code Search
+# Matahari Test Code Search ( by Gery )
 Test code Single Page Application untuk halaman Search
 
 ### Cara Menjalankan Aplikasi :
@@ -15,7 +15,6 @@ Test code Single Page Application untuk halaman Search
 - Masuk ke directory root folder project dengan command line, dan ketik 
    "npm run build" untuk membuat production folder.
 - untuk menjalankan production app di static server ketik "serve -s build"
-- current production folder sudah ada di directory "/build"
 ```
 
 ### Framework dll :
