@@ -1,37 +1,41 @@
 # Matahari Test Code Search
-Test code Single Page Application untuk halaman Search
 
-### Cara Menjalankan Aplikasi :
-```sh
+
+** Cara Menjalankan Aplikasi :
+
 1. Harus ada NPM terinstall dalam sistem anda.
 2. Masuk ke directory root folder project dengan command line, dan ketik 
    "npm install" untuk menginstall semua dependencies pada project ini.
 3. Setelah itu ketik "npm start" untuk menjalankan server dan automatis aplikasi
    akan terbuka di browser.
-```
 
-### Untuk membuat Production Folder :
-```sh
+============================
+
+** Untuk membuat Production Folder :
+
 - Masuk ke directory root folder project dengan command line, dan ketik 
    "npm run build" untuk membuat production folder.
 - untuk menjalankan production app di static server ketik "serve -s build"
 - current production folder sudah ada di directory "/build"
-```
 
-### Framework dll :
-```sh
+============================
+
+** Framework dll :
+
 - React Framework : "create-react-app"
 - Styling : SASS/SCSS
-```
 
-### Fitur Ekstra :
-```sh
+============================
+
+** Fitur Ekstra :
+
 - Infinity Scroll
 - responsive (mobile-desktop)
-```
 
-### Dependency tambahan :
-```sh
+============================
+
+** Dependency tambahan :
+
 1. axios => get data
 2. react-lazy-load-image-component => lazy load image
-```
+
