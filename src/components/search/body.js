@@ -4,9 +4,11 @@ import Spinner from '../../assets/images/rolling_100.gif';
 import ArrowDown from '../../assets/images/chevron-down.svg';
 import NotFound from './notFound';
 import axios from 'axios';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 
-let result=[],count=36;
+let result=[];
 
 export class body extends Component {
     constructor(props){
@@ -14,7 +16,7 @@ export class body extends Component {
         this.state = {
             query:"",
             isLoaded:true,
-            windowWidth:'',
+            windowWidth:window.innerWidth,
             dropdownData:{
                 dropdownList:['Populer','Terbaru','Harga Terendah','Harga Tertinggi','Diskon Terendah','Diskon Tertinggi'],
                 showDropdown:false,
@@ -25,64 +27,21 @@ export class body extends Component {
             loopStatus:{
                 currentLoop:0,
                 totalLoop:null,
-                loopLeft:null
-                
-            }
+                loopLeft:null,
+                loopLoader:false
+            },
+            dataCount:null
         }
-
-    
-        // window.onscroll = () => {
-            
-        //     // Checks that the page has scrolled to the bottom
-        //     if (
-        //     window.innerHeight + document.documentElement.scrollTop
-        //     === document.documentElement.offsetHeight
-        //     ) {
-        //         console.log("MBAA");
-        //         const {dataCount,loopStatus} = this.state;
-
-        //         if(count<this.state.dataCount){
-        //             if(dataCount!==undefined){
-        //                 let countDivide = Math.floor(dataCount/36);
-
-        //                 console.log("DIVIDED = ",Math.floor(dataCount/36));
-        //                 console.log("LOOP LEFT = ",dataCount-(36*countDivide));
-
-        //                 this.setState({
-        //                     loopStatus:{
-        //                         currentLoop:loopStatus.currentLoop+1,
-        //                         totalLoop:countDivide,
-        //                         loopLeft:dataCount-(36*countDivide)
-        //                     }
-        //                 },()=>{
-        //                     console.log("LOOP STATUS = ",this.state.loopStatus)
-        //                     if(this.state.loopStatus.currentLoop<=this.state.loopStatus.totalLoop){
-        //                         this.getData(this.state.query);
-        //                     }
-        //                 })
-        //             }
-        //         }
-                
-        //     }
-        // };
     }
 
     setWindowDimension = () => {
         this.setState({
-            windowWidth: window.innerWidth, 
-            windowHeight: window.innerHeight
-        },()=>{
-            console.log("STATE WINDOW WIDTH = ",this.state.windowWidth);
+            windowWidth: window.innerWidth
         })
     }
 
     isBottom(el) {
-        return el.getBoundingClientRect().bottom <= window.innerHeight;
-    }
-
-    umaka(){
-        this.setState({haha:"hoho"})
-        console.log("UMAGA")
+        return Math.floor(el.getBoundingClientRect().bottom) <= window.innerHeight;
     }
 
     componentDidMount(){
@@ -94,35 +53,45 @@ export class body extends Component {
         document.removeEventListener('scroll', this.trackScrolling);
         window.removeEventListener("resize", this.setWindowDimension);
     }
+    
 
     trackScrolling = () => {
         const wrappedElement = document.getElementById('bodyBase');
         if (this.isBottom(wrappedElement)) {
-            console.log("bottom reached!");
             const {dataCount,loopStatus} = this.state;
-
-            if(count<this.state.dataCount){
-                if(dataCount!==undefined){
+                if(dataCount!==null){
                     let countDivide = Math.floor(dataCount/36);
 
-                    console.log("DIVIDED = ",Math.floor(dataCount/36));
-                    console.log("LOOP LEFT = ",dataCount-(36*countDivide));
+                    document.removeEventListener('scroll', this.trackScrolling);
+                    setTimeout(
+                        function() {
+                            document.addEventListener('scroll', this.trackScrolling);
+                        }
+                        .bind(this),
+                        1000
+                    );
 
                     this.setState({
                         loopStatus:{
+                            ...loopStatus,
                             currentLoop:loopStatus.currentLoop+1,
                             totalLoop:countDivide,
                             loopLeft:dataCount-(36*countDivide)
                         }
                     },()=>{
-                        console.log("LOOP STATUS = ",this.state.loopStatus)
                         if(this.state.loopStatus.currentLoop<=this.state.loopStatus.totalLoop){
-                            this.getData(this.state.query);
+                            this.setState({
+                                loopStatus:{
+                                    ...this.state.loopStatus,
+                                    loopLoader:true
+                                }
+                            },()=>{
+                                this.getData(this.state.query);
+                            })
                         }
                     })
+
                 }
-            }
-            // document.removeEventListener('scroll', this.trackScrolling);
         }
     };
 
@@ -146,8 +115,6 @@ export class body extends Component {
 
     getData = (par,sort) =>{
         const {loopStatus} = this.state;
-        console.log("SORT = ",sort);
-        console.log("HOHO = ",document.documentElement.scrollHeight);
 
         let perPage = loopStatus.currentLoop === loopStatus.totalLoop ? loopStatus.loopLeft : 36;
         let sorting = sort!==undefined ? 
@@ -156,39 +123,32 @@ export class body extends Component {
         
         axios.get('https://services.mataharimall.com/products/v0.2/products/search?q='+par+'&per_page='+perPage+sorting)
         .then(res => {
-            console.log('Res =',res.data.data);
             let datas = res.data.data;
             result = [
                 ...this.state.data,
                 ...datas.products
             ];
 
-            console.log("RESULLTSSSSS = ",result);
-
-
-
             this.setState({
                 data:result,
                 dataCount:datas.info.product_count,
                 isLoaded:true,
                 errorSearch:false,
-                bodyHeight:datas.info.product_count!==undefined?this.state.bodyHeight: this.state.bodyHeight 
-            },()=>{
-                console.log("RESULLT MERGING = ",result);
+                bodyHeight:datas.info.product_count!==undefined?this.state.bodyHeight: this.state.bodyHeight,
+                loopStatus:{
+                    ...this.state.loopStatus,
+                    loopLoader:false
+                }
             });
         })
         .catch(err=>{
-            console.log("ERORO = ",err);
-            this.setState({isLoaded:true,errorSearch:true},()=>{console.log("ERRORSEARCH = ",this.state.errorSearch)})
+            this.setState({isLoaded:true,errorSearch:true})
         });
-       
-        
 
     }
     
 
     componentWillReceiveProps({query,bodyHeight}) {
-        console.log("MUASOK SINIIIII");
         this.setState({
             query:query,
             bodyHeight:bodyHeight+'px',
@@ -198,22 +158,18 @@ export class body extends Component {
                 totalLoop:null,
                 loopLeft:null
                 
-            }
+            },
+            dataCount:null
         },()=>{
             if(query!==''){
                 this.setState({isLoaded:false},()=>this.getData(query));
                 
             }
-        })
-        console.log("QUERYY = ",query);
-        
+        })        
     }
 
     showListDropdown(par){
         const {dropdownData} = this.state;
-
-        console.log("PAREPAREE = ",par)
-        console.log("DROPDOWNDATA = ",dropdownData);
 
         this.setState({
             dropdownData:{
@@ -223,31 +179,34 @@ export class body extends Component {
             }
         },()=>{
             if(par!==undefined){
-                this.getData(this.state.query,par);
+                this.setState({
+                    data:[],
+                    loopStatus:{
+                        currentLoop:0,
+                        totalLoop:null,
+                        loopLeft:null
+                    },
+                    isLoaded:false
+                },()=>{
+                    this.getData(this.state.query,par);
+                })
             }   
         });
 
     }
 
     render() {
-        console.log("RENDERINGG...");
         const {query,data,dataCount,bodyHeight,isLoaded,windowWidth,dropdownData,errorSearch} = this.state;
         if(isLoaded){
-            console.log("masuk isLoaded");
             if(query===""){
-                console.log("masuk query");
                 return (
                     <section className="body" style={{textAlign:"center",height:bodyHeight,lineHeight:bodyHeight,padding:0}} id="bodyBase">
                         <img src={Logo} alt="" className="logo" />
                     </section>
                 )
             }else{
-                console.log("masuk tidak query");
-
-                if (data !== undefined) {
-                    console.log("masuk data tidak undefined");
-                    if(dataCount!==undefined){
-                        console.log("data yg dicari ada");
+                if (result !== undefined || result.length !== 0) {
+                    if(dataCount!==null){
                         return(
                             <section className="body" id="bodyBase">
                                 <h1>"{query}" <span>{dataCount} products found</span></h1>
@@ -280,7 +239,7 @@ export class body extends Component {
                                             key={index} ind={index} 
                                              >
                                                 <div className="colInside">
-                                                    <img 
+                                                    <LazyLoadImage 
                                                         alt={item.product_title}
                                                         className={'productImage'} 
                                                         src={windowWidth>=400?item.images[0].thumbnail400:item.images[0].thumbnail200} 
@@ -290,6 +249,7 @@ export class body extends Component {
                                                         onMouseOut={e => {
                                                             e.currentTarget.src = windowWidth>=400?item.images[0].thumbnail400:item.images[0].thumbnail200;
                                                         }}
+                                                        effect="blur"
                                                         />
                                                     <p className="productTitle">{item.brand.name}</p>
                                                     <p className="productDesc">{item.product_title}</p>
@@ -299,11 +259,17 @@ export class body extends Component {
                                         </div>
                                     )
                                 }
+
                                 </div>
+                                
+                                { this.state.loopStatus.loopLoader?
+                                    <div className="loadingScrollWrap">
+                                        <img src={Spinner} alt="Matahari Loading Gif" className="loadingScroll"/> 
+                                    </div> : null
+                                }
                             </section>
                         )
                     }else{
-                        console.log("data yg dicari tidak ada");
                         return(
                             <NotFound query={query} bodyHeight={bodyHeight}/>
                         )

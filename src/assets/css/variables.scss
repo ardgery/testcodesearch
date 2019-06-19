@@ -6,12 +6,15 @@ $mainGrey: #949494;
 $mainRed: #eb0029;
 
 /*==== FONT-SIZES ====*/
-$headingFont:30px;
+$headingFont:25px;
 $headingSmall:20px;
 $advanceFont:16px;
+$largeFont:15px;
 $normalFont:14px;
 $semiFont:13px;
 $miniFont:12px;
 
 /*==== MEDIA QUERIES BREAK ====*/
-$breakTablet: 600px;
+$breakPhone: 320px;
+$breakPhoneLandscape: 481px;
+$breakTablet: 801px;

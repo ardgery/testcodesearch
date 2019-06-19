@@ -21,3 +21,13 @@
         display: table;
     }
 }
+@mixin mediaMiniFont{
+    @media (min-width:$breakPhoneLandscape)  {
+        font-size:$semiFont;
+        height:16px;
+    }
+    @media (min-width:$breakTablet)  {
+        font-size:$normalFont;
+        height:$normalFont;
+    }
+}

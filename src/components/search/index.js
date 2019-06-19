@@ -9,12 +9,10 @@ class Search extends React.Component {
     bodyHeight:'auto'
   }
   doSearch = (par) => {
-      console.log("PAR =",par);
       this.setState({ query:par })
   }
   
   setBodyHeight = (par) => {
-    console.log("BODY HEIGHT",par);
     this.setState({bodyHeight:par})
   }
 

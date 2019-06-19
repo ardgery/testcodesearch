@@ -19,13 +19,14 @@ body{
         width:100%;
         border:none;
         border-radius:5px;
-        padding:10px 30px;
+        padding: 10px 0 10px 32px;
         -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
         -moz-box-sizing: border-box;    /* Firefox, other Gecko */
         box-sizing: border-box;    
         background-image: url("../images/search.svg");
         background-repeat: no-repeat;
         background-position: 10px center;
+        background-size: 15px 15px;
     }
 }
 
@@ -37,10 +38,10 @@ body{
     h1{
         font-size:$headingFont;
         font-weight:bold;
-        margin-bottom:40px
+        margin: 10px 0 30px 10px;
     }
     span{
-        font-size:$normalFont;
+        font-size:$semiFont;
         font-weight:normal;
         color:$mainGrey;
     }
@@ -52,8 +53,7 @@ body{
         float:left;
         width:50%;
         margin-bottom:30px;
-
-        @media screen and (min-width: $breakTablet) {
+        @media (min-width:$breakTablet)  {
             width:25%;
         }
     }
@@ -114,15 +114,25 @@ body{
         font-size: $miniFont;
         font-weight:bold;
         margin: 5px 0 10px 0;
-        height: 12px;
+        height: 13px;
         overflow: hidden;
+        @include mediaMiniFont;
     }
     .productDesc{
         font-size:$miniFont;
         color:$mainGrey;
-        line-height: 16px;
+        line-height: 17px;
         height: 35px;
         overflow: hidden;
+        @media (min-width:$breakPhoneLandscape)  {
+            font-size:$semiFont;
+            height:16px;
+        }
+        @media (min-width:$breakTablet)  {
+            font-size:$normalFont;
+            height: 42px;
+            line-height: 19px;
+        }
     }
     .realPrize{
         font-size:$normalFont;
@@ -130,6 +140,14 @@ body{
         margin: 8px 0 5px 0;
         height: 14px;
         overflow: hidden;
+        @media (min-width:$breakPhoneLandscape)  {
+            font-size:$largeFont;
+            height:$largeFont;
+        }
+        @media (min-width:$breakTablet)  {
+            font-size:$largeFont;
+            height:$largeFont;
+        }
     }
     .prize{
         font-size:$miniFont;
@@ -137,9 +155,13 @@ body{
         text-decoration:line-through;
         height: 14px;
         overflow: hidden;
+        @include mediaMiniFont;
     }
     .colWrapper{
         @include clearFloat;
+    }
+    .loadingScrollWrap{
+        width:100%;
         .loadingScroll{
             display:block;
             margin:0 auto;
