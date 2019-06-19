@@ -140,6 +140,11 @@ body{
     }
     .colWrapper{
         @include clearFloat;
+        .loadingScroll{
+            display:block;
+            margin:0 auto;
+            width:50px;
+        }
     }
     .notFound{
         position:relative;
@@ -172,6 +177,6 @@ body{
     }
     .loadingGif{
         vertical-align: middle;
-        width:50px;
+        width:40px;
     }
 }

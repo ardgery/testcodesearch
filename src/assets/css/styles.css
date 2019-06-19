@@ -153,6 +153,10 @@ body {
     content: "";
     clear: both;
     display: table; }
+  .body .colWrapper .loadingScroll {
+    display: block;
+    margin: 0 auto;
+    width: 50px; }
   .body .notFound {
     position: relative;
     text-align: center; }
@@ -176,4 +180,4 @@ body {
     color: #949494; }
   .body .loadingGif {
     vertical-align: middle;
-    width: 50px; }
+    width: 40px; }

@@ -5,6 +5,8 @@ import ArrowDown from '../../assets/images/chevron-down.svg';
 import NotFound from './notFound';
 import axios from 'axios';
 
+let result=[],count=36;
+
 export class body extends Component {
     constructor(props){
         super(props);
@@ -17,8 +19,52 @@ export class body extends Component {
                 showDropdown:false,
                 activeIndex:0
             },
-            errorSearch:false
+            errorSearch:false,
+            data:[],
+            loopStatus:{
+                currentLoop:0,
+                totalLoop:null,
+                loopLeft:null
+                
+            }
         }
+
+        // Binds our scroll event handler
+        window.onscroll = () => {
+            const {dataCount,loopStatus} = this.state;
+            // Checks that the page has scrolled to the bottom
+            if (
+            window.innerHeight + document.documentElement.scrollTop
+            === document.documentElement.offsetHeight
+            ) {
+                console.log("MBAA");
+                // this.setState({isLoaded:false});
+                
+
+                if(count<this.state.dataCount){
+                    if(dataCount!==undefined){
+                        let countDivide = Math.floor(dataCount/36);
+
+                        console.log("DIVIDED = ",Math.floor(dataCount/36));
+                        console.log("LOOP LEFT = ",dataCount-(36*countDivide));
+
+                        this.setState({
+                            loopStatus:{
+                                currentLoop:loopStatus.currentLoop+1,
+                                totalLoop:countDivide,
+                                loopLeft:dataCount-(36*countDivide)
+                            }
+                        },()=>{
+                            console.log("LOOP STATUS = ",this.state.loopStatus)
+                            if(this.state.loopStatus.currentLoop<=this.state.loopStatus.totalLoop){
+                                this.getData(this.state.query);
+                            }
+                        })
+                    }
+                }
+                
+            }
+        };
     }
 
     setWindowDimension = () => {
@@ -31,25 +77,30 @@ export class body extends Component {
     }
 
     isBottom(el) {
-        return el.getBoundingClientRect().bottom <= window.innerHeight;
+        // return el.getBoundingClientRect().bottom <= window.innerHeight;
+    }
+
+    umaka(){
+        this.setState({haha:"hoho"})
+        console.log("UMAGA")
     }
 
     componentDidMount(){
-        document.addEventListener('scroll', this.trackScrolling);
+        // document.addEventListener('scroll', this.trackScrolling);
         window.addEventListener("resize", this.setWindowDimension); 
     }
 
     componentWillUnmount() {
-        document.removeEventListener('scroll', this.trackScrolling);
+        // document.removeEventListener('scroll', this.trackScrolling);
         window.removeEventListener("resize", this.setWindowDimension);
     }
 
     trackScrolling = () => {
-        const wrappedElement = document.getElementById('bodyBase');
-        if (this.isBottom(wrappedElement)) {
-            console.log("bottom reached!");
-            document.removeEventListener('scroll', this.trackScrolling);
-        }
+        // const wrappedElement = document.getElementById('bodyBase');
+        // if (this.isBottom(wrappedElement)) {
+        //     console.log("bottom reached!");
+        //     document.removeEventListener('scroll', this.trackScrolling);
+        // }
     };
 
     getSortData(par){
@@ -70,28 +121,65 @@ export class body extends Component {
         return sortResult;
     }
 
-    getData(par,sort){
-        this.setState({isLoaded:false});
+    getData = (par,sort) =>{
+        const {loopStatus} = this.state;
         console.log("SORT = ",sort);
         console.log("HOHO = ",document.documentElement.scrollHeight);
-        let sorting = sort!==undefined? "&sort="+this.getSortData(sort):"&sort=energy+DESC";
+
+        let perPage = loopStatus.currentLoop === loopStatus.totalLoop ? loopStatus.loopLeft : 36;
+        let sorting = sort!==undefined ? 
+                      (sort!==false?"&sort="+this.getSortData(sort):"&sort=energy+DESC"):"&sort=energy+DESC";
         
-        axios.get('https://services.mataharimall.com/products/v0.2/products/search?q='+par+'&per_page=36'+sorting)
+        
+        axios.get('https://services.mataharimall.com/products/v0.2/products/search?q='+par+'&per_page='+perPage+sorting)
         .then(res => {
             console.log('Res =',res.data.data);
             let datas = res.data.data;
-            this.setState({data:datas,isLoaded:true,errorSearch:false,bodyHeight:datas.info.product_count!==undefined?this.state.bodyHeight: this.state.bodyHeight });
+            result = [
+                ...this.state.data,
+                ...datas.products
+            ];
+
+            console.log("RESULLTSSSSS = ",result);
+
+
+
+            this.setState({
+                data:result,
+                dataCount:datas.info.product_count,
+                isLoaded:true,
+                errorSearch:false,
+                bodyHeight:datas.info.product_count!==undefined?this.state.bodyHeight: this.state.bodyHeight 
+            },()=>{
+                console.log("RESULLT MERGING = ",result);
+            });
         })
         .catch(err=>{
             console.log("ERORO = ",err);
             this.setState({isLoaded:true,errorSearch:true},()=>{console.log("ERRORSEARCH = ",this.state.errorSearch)})
         });
+       
+        
+
     }
     
+
     componentWillReceiveProps({query,bodyHeight}) {
-        this.setState({query:query,bodyHeight:bodyHeight+'px'},()=>{
+        console.log("MUASOK SINIIIII");
+        this.setState({
+            query:query,
+            bodyHeight:bodyHeight+'px',
+            data:[],
+            loopStatus:{
+                currentLoop:0,
+                totalLoop:null,
+                loopLeft:null
+                
+            }
+        },()=>{
             if(query!==''){
-                this.getData(query);
+                this.setState({isLoaded:false},()=>this.getData(query));
+                
             }
         })
         console.log("QUERYY = ",query);
@@ -120,7 +208,7 @@ export class body extends Component {
 
     render() {
         console.log("RENDERINGG...");
-        const {query,data,bodyHeight,isLoaded,windowWidth,dropdownData,errorSearch} = this.state;
+        const {query,data,dataCount,bodyHeight,isLoaded,windowWidth,dropdownData,errorSearch} = this.state;
         if(isLoaded){
             console.log("masuk isLoaded");
             if(query===""){
@@ -135,11 +223,11 @@ export class body extends Component {
 
                 if (data !== undefined) {
                     console.log("masuk data tidak undefined");
-                    if(data.info.product_count!==undefined){
+                    if(dataCount!==undefined){
                         console.log("data yg dicari ada");
                         return(
                             <section className="body" id="bodyBase">
-                                <h1>"{query}" <span>{data.info.product_count} products found</span></h1>
+                                <h1>"{query}" <span>{dataCount} products found</span></h1>
                                 <div className="dropdownArea">
                                     <div className="dropdownListWrap">
                                         <p className="sort">
@@ -163,7 +251,7 @@ export class body extends Component {
                                 </div>
                                 <div className="colWrapper">
                                 {
-                                    data.products.map((item,index)=>
+                                    data.map((item,index)=>
                                         <div 
                                             className="col" 
                                             key={index} ind={index} 
