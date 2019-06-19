@@ -1,4 +1,4 @@
-# Matahari Test Code Search
+# Matahari Test Code Search ( by Gery )
 
 
 ** Cara Menjalankan Aplikasi :
@@ -16,7 +16,6 @@
 - Masuk ke directory root folder project dengan command line, dan ketik 
    "npm run build" untuk membuat production folder.
 - untuk menjalankan production app di static server ketik "serve -s build"
-- current production folder sudah ada di directory "/build"
 
 ============================
 
