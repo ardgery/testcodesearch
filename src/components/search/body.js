@@ -54,44 +54,47 @@ export class body extends Component {
         window.removeEventListener("resize", this.setWindowDimension);
     }
     
+    loadNextData(){
+        const {dataCount,loopStatus} = this.state;
+        if(dataCount!==null){
+            let countDivide = Math.floor(dataCount/36);
+
+            document.removeEventListener('scroll', this.trackScrolling);
+            setTimeout(
+                function() {
+                    document.addEventListener('scroll', this.trackScrolling);
+                }
+                .bind(this),
+                1000
+            );
+
+            this.setState({
+                loopStatus:{
+                    ...loopStatus,
+                    currentLoop:loopStatus.currentLoop+1,
+                    totalLoop:countDivide,
+                    loopLeft:dataCount-(36*countDivide)
+                }
+            },()=>{
+                if(this.state.loopStatus.currentLoop<=this.state.loopStatus.totalLoop){
+                    this.setState({
+                        loopStatus:{
+                            ...this.state.loopStatus,
+                            loopLoader:true
+                        }
+                    },()=>{
+                        this.getData(this.state.query);
+                    })
+                }
+            })
+
+        }
+    }
 
     trackScrolling = () => {
         const wrappedElement = document.getElementById('bodyBase');
         if (this.isBottom(wrappedElement)) {
-            const {dataCount,loopStatus} = this.state;
-                if(dataCount!==null){
-                    let countDivide = Math.floor(dataCount/36);
-
-                    document.removeEventListener('scroll', this.trackScrolling);
-                    setTimeout(
-                        function() {
-                            document.addEventListener('scroll', this.trackScrolling);
-                        }
-                        .bind(this),
-                        1000
-                    );
-
-                    this.setState({
-                        loopStatus:{
-                            ...loopStatus,
-                            currentLoop:loopStatus.currentLoop+1,
-                            totalLoop:countDivide,
-                            loopLeft:dataCount-(36*countDivide)
-                        }
-                    },()=>{
-                        if(this.state.loopStatus.currentLoop<=this.state.loopStatus.totalLoop){
-                            this.setState({
-                                loopStatus:{
-                                    ...this.state.loopStatus,
-                                    loopLoader:true
-                                }
-                            },()=>{
-                                this.getData(this.state.query);
-                            })
-                        }
-                    })
-
-                }
+            this.loadNextData();
         }
     };
 
@@ -115,7 +118,6 @@ export class body extends Component {
 
     getData = (par,sort) =>{
         const {loopStatus} = this.state;
-
         let perPage = loopStatus.currentLoop === loopStatus.totalLoop ? loopStatus.loopLeft : 36;
         let sorting = sort!==undefined ? 
                       (sort!==false?"&sort="+this.getSortData(sort):"&sort=energy+DESC"):"&sort=energy+DESC";
@@ -205,7 +207,7 @@ export class body extends Component {
                     </section>
                 )
             }else{
-                if (result !== undefined || result.length !== 0) {
+                if (result.length !== 0) {
                     if(dataCount!==null){
                         return(
                             <section className="body" id="bodyBase">
@@ -275,12 +277,9 @@ export class body extends Component {
                         )
                     }
                 }else{
-                    if(errorSearch){
-                        return(
-                            <NotFound query={query} bodyHeight={bodyHeight}/>
-                        )
-                    }
-                    return null;
+                    return(
+                        <NotFound query={query} bodyHeight={bodyHeight}/>
+                    )
                 }
             }
         }else{
